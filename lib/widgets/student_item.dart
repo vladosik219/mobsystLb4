@@ -8,8 +8,9 @@ class StudentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Визначення кольору фону на основі статі
-    final itemColor = student.gender == Gender.male ? const Color.fromARGB(255, 86, 185, 255) : const Color.fromARGB(255, 222, 72, 252);
+    final itemColor = student.gender == Gender.male
+        ? const Color.fromARGB(255, 86, 185, 255)
+        : const Color.fromARGB(255, 222, 72, 252);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -22,34 +23,36 @@ class StudentItem extends StatelessWidget {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: const Offset(0, 3), // зміщення тіні
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Ім'я та прізвище студента
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 '${student.firstName} ${student.lastName}',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Colors.white,
+                    ),
               ),
             ],
           ),
-          // Іконка спеціальності та оцінка
           Row(
             children: [
               Icon(
-                departmentIcons[student.department] ?? Icons.help_outline,
+                departmentIcons[student.departmentId] ?? Icons.help_outline,
                 color: Colors.grey[700],
               ),
               const SizedBox(width: 8),
               Text(
                 'Grade: ${student.grade}',
-                style: const TextStyle(fontSize: 16),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Colors.white,
+                    ),
               ),
             ],
           ),
