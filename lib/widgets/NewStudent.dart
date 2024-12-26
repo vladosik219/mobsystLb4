@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/student.dart';
 import '../providers/departments_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class NewStudent extends ConsumerStatefulWidget {
   final Student? student;
@@ -16,7 +17,7 @@ class NewStudent extends ConsumerStatefulWidget {
 class _NewStudentState extends ConsumerState<NewStudent> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-
+final _uuid = Uuid();
   String? _selectedDepartmentId;
   Gender? _selectedGender;
   int _grade = 0;
@@ -43,6 +44,7 @@ class _NewStudentState extends ConsumerState<NewStudent> {
     }
 
     final newStudent = Student(
+      id: _uuid.v4(),
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
       departmentId: _selectedDepartmentId!,

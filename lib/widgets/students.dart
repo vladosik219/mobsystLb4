@@ -13,8 +13,24 @@ class StudentsScreen extends ConsumerStatefulWidget {
 }
 
 class _StudentsScreenState extends ConsumerState<StudentsScreen> {
+    bool CircularLoading = false;
   Student? _recentlyDeletedStudent;
   int? _recentlyDeletedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchStudents();
+  }
+
+  Future<void> _fetchStudents() async {
+    setState(() { CircularLoading = true; });
+    try {
+      await ref.read(studentsProvider.notifier).fetchStudents();
+    } catch (error) {// Handle error
+    }
+    setState(() { CircularLoading = false; });
+  }
 
   void _editStudent(Student student, int index) {
     showModalBottomSheet(
@@ -37,7 +53,7 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
       _recentlyDeletedStudent = students[index];
       _recentlyDeletedIndex = index;
     });
-    ref.read(studentsProvider.notifier).removeStudent(index);
+    ref.read(studentsProvider.notifier).removeStudentLocal(index);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -50,12 +66,16 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
         ),
         duration: const Duration(seconds: 3),
       ),
-    );
+    ).closed.then((value) {
+      if (value != SnackBarClosedReason.action) {
+        ref.read(studentsProvider.notifier).removeStudent(_recentlyDeletedStudent!);
+      }
+    });
   }
 
   void _undoDelete() {
     if (_recentlyDeletedStudent != null && _recentlyDeletedIndex != null) {
-      ref.read(studentsProvider.notifier).insertStudent(_recentlyDeletedStudent!, _recentlyDeletedIndex!);
+      ref.read(studentsProvider.notifier).insertStudentLocal(_recentlyDeletedStudent!, _recentlyDeletedIndex!);
       setState(() {
         _recentlyDeletedStudent = null;
         _recentlyDeletedIndex = null;
@@ -91,7 +111,9 @@ class _StudentsScreenState extends ConsumerState<StudentsScreen> {
           ),
         ],
       ),
-      body: ListView.separated(
+      body: CircularLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.separated(
         itemCount: students.length,
         itemBuilder: (ctx, index) {
           return Dismissible(

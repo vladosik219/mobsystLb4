@@ -8,6 +8,7 @@ class Student {
   final String departmentId;
   final int grade;
   final Gender gender;
+  final String id;
 
   Student({
     required this.firstName,
@@ -15,9 +16,11 @@ class Student {
     required this.departmentId,
     required this.grade,
     required this.gender,
+    required this.id,
   });
 
   Student copyWith({
+    String? id,
     String? firstName,
     String? lastName,
     String? departmentId,
@@ -25,6 +28,7 @@ class Student {
     Gender? gender,
   }) {
     return Student(
+      id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       departmentId: departmentId ?? this.departmentId,
